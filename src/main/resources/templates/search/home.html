@@ -1,0 +1,17 @@
+<!DOCTYPE content>
+<content xmlns:th="http://www.thymeleaf.org">
+<content lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>How they eat it</title>
+</head>
+<body>
+    <h1>How they eat it</h1>
+    <form action="/search/results">
+        Place:<br>
+        <input type="text" name="place" th:value="${place}"><br>
+        Ingredients:<br>
+        <input type="text" name="ingredients" th:value="${ingredients}"><br><br>
+        <input type="submit" value="Search">
+    </form></body>
+</content>

@@ -1,0 +1,16 @@
+<!DOCTYPE HTML>
+<content xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/content; charset=UTF-8" />
+</head>
+<body>
+    <h1>Not crawling</h1>
+    <p th:text="${message}"/>
+    <p th:text="${error}" />
+    <form action="/crawl/go">
+        <input type="number" name="nbCrawlers" text=" crawlers" />
+        <input type="submit" value="Start" />
+    </form>
+</body>
+</content>
