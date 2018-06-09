@@ -1,6 +1,8 @@
 package searchengine.conf;
 
-public class RecipePageIdentifier {
+import searchengine.document.Document;
+
+public class PageIdentifier {
 
     private static CookingWord[] cookingVoc = {
             new CookingWord("add", 0.5),
@@ -11,6 +13,7 @@ public class RecipePageIdentifier {
             new CookingWord("board", 0.5),
             new CookingWord("boil"),
             new CookingWord("bowl"),
+            new CookingWord("bring", 0.5),
             new CookingWord("broil"),
             new CookingWord("centimeter"),
             new CookingWord("cm", 0.5),
@@ -38,6 +41,7 @@ public class RecipePageIdentifier {
             new CookingWord("firm"),
             new CookingWord("flesh"),
             new CookingWord("fresh"),
+            new CookingWord("frozen"),
             new CookingWord("fold"),
             new CookingWord("fried"),
             new CookingWord("fry"),
@@ -122,11 +126,12 @@ public class RecipePageIdentifier {
             new CookingWord(" kg ", 0.3),
             new CookingWord(" g ", 0.3),
             new CookingWord(" ml ", 0.3),
-            new CookingWord(" dl ", 0.3)
+            new CookingWord(" dl ", 0.3),
     };
 
     private static final double MIN_VOC_RATIO = 0.009;
-    private static final double MIN_VOC = 15;
+    private static final double MIN_VOC = 20;
+    private static final double ACCEPTED_VOC = 60;
 
     private static WordGraph wordGraph = null;
 
@@ -148,16 +153,21 @@ public class RecipePageIdentifier {
         return getWordGraph().weigh(content);
     }
 
-    public static boolean isCookingPage(String url, String content) {
-        RecipeUrlIdentifier.IsRecipe urlIndicatesRecipe = RecipeUrlIdentifier.urlIsRecipe(url);
-        if (urlIndicatesRecipe != RecipeUrlIdentifier.IsRecipe.UNKNOWN) {
-            return urlIndicatesRecipe.Bool();
+    public static boolean isValidRecipe(Document document) {
+        PageIdentifierKnownDomains.IsRecipe isKnownRecipe = PageIdentifierKnownDomains.urlIsRecipe(document);
+        if (isKnownRecipe != PageIdentifierKnownDomains.IsRecipe.UNKNOWN) {
+            return isKnownRecipe.Bool();
         } else {
-            double voc = getWordGraph().weigh(content);
-            double score = voc / content.length();
-            System.out.println("voc=" + voc + "\tscore=" + score);
-            return score >= MIN_VOC_RATIO && voc >= MIN_VOC;
+            boolean isRecipe = document.getUrl().contains("recipe/") || contentSuggestsCookingRecipe(document);
+            return isRecipe && PlaceNames.isFromOneCountry(document);
         }
+    }
+
+    static boolean contentSuggestsCookingRecipe(Document document) {
+        double voc = getWordGraph().weigh(document.getContent());
+        double score = voc / document.getContent().length();
+        System.out.println("voc=" + voc + "\tscore=" + score);
+        return (score >= MIN_VOC_RATIO && voc >= MIN_VOC) || voc >= ACCEPTED_VOC;
     }
 
     private static class CookingWord {

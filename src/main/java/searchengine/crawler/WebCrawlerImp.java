@@ -58,7 +58,7 @@ public class WebCrawlerImp extends WebCrawler {
             title = titles.get(0).html();
         }
         PageReceiverSingleton.get().receive(new WebPageDoc(
-                page.getWebURL().getURL(), combineWhitespaces(page.getParseData().toString()), title));
+                page.getWebURL().getURL(), combineWhitespaces(doc.wholeText()), title, html));
     }
 
     private String combineWhitespaces(String str) {

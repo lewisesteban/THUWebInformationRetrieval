@@ -1,11 +1,13 @@
 package searchengine.conf;
 
+import searchengine.document.Document;
+
 public class PlaceNames {
 
     private static String[][] places = {
             {"Abkhazia", "Abkhaz", "Abkhazian"},
             {"Afghan", "Afghanistan"},
-            {"Åland", "Aland"},
+            //{"Åland", "Aland"},
             {"Albania", "Albanian"},
             {"Algeria", "Algerian"},
             {"Samoa", "Samoan"},
@@ -42,12 +44,12 @@ public class PlaceNames {
             {"Burkina", "Burkinabé", "Burkinabè", "Burkinabe"},
             {"Burma", "Burmese"},
             {"Burundi", "Burundian"},
-            {"Cabo Verde", "Cabo Verdean"},
+            {"Cabo Verde", "Cabo Verdean", "carboverde"},
             {"Cambodia", "Cambodian"},
             {"Cameroon", "Cameroonian"},
             {"Canada", "Canadian"},
             {"Cayman", "Caymanian"},
-            {"Central Africa", "Central African"},
+            {"Central Africa", "Central African", "centralafrica"},
             {"Chad", "Chadian"},
             {"Chile", "Chilean"},
             {"China", "Chinese"},
@@ -94,14 +96,14 @@ public class PlaceNames {
             {"Guadeloupe", "Guadeloupian"},
             {"Guam", "Guamanian"},
             {"Guatemala", "Guatemalan"},
-            {"Guernsey", "Channel Island", "Channel Islander"},
+            {"Guernsey", "Jersey", "Channel Island", "Channel Islander"},
             {"Guinea-Bissau", "Bissau-Guinean"},
             {"Guinea", "Guinean"},
             {"Guyana", "Guyanese"},
             {"Haiti", "Haitian"},
             {"Heard", "McDonald"},
             {"Honduras", "Honduran"},
-            {"Hong Kong", "Hong Kongese", "Hong Konger"},
+            {"Hong Kong", "Hong Kongese", "Hong Konger", "hongkong"},
             {"Hungary", "Hungarian", "Magyar"},
             {"Iceland", "Icelandic", "Icelander"},
             {"India", "Indian"},
@@ -115,7 +117,6 @@ public class PlaceNames {
             {"Jamaica", "Jamaican"},
             {"Jan Mayen"},
             {"Japan", "Japanese"},
-            {"Jersey", "Channel Island", "Channel Islander"},
             {"Jordan", "Jordanian"},
             {"Kazakhstan", "Kazakhstani", "Kazakh"},
             {"Kenya", "Kenyan"},
@@ -163,7 +164,7 @@ public class PlaceNames {
             {"Nepal", "Nepali", "Nepalese"},
             {"Netherlands", "Netherlandic", "Dutch"},
             {"New Caledonia", "New Caledonian"},
-            {"New Zealand", "NZ", "N.Z.", "Zelanian", "New Zealanders"},
+            {"New Zealand", "N.Z.", "Zelanian", "New Zealanders", "newzealand"},
             {"Nicaragua", "Nicaraguan"},
             {"Niger", "Nigerien"},
             {"Nigeria", "Nigerian"},
@@ -172,7 +173,7 @@ public class PlaceNames {
             {"Northern Ireland", "Northern Irish"},
             {"Northern Mariana", "Northern Marianan"},
             {"Norway", "Norwegian"},
-            {"Oman", "Omani"},
+            //{"Oman", "Omani"},
             {"Pakistan", "Pakistani", "Pakis"},
             {"Palau", "Palauan"},
             {"Palestine", "Palestinian"},
@@ -184,7 +185,7 @@ public class PlaceNames {
             {"Pitcairn"},
             {"Poland", "Polish", "Poles"},
             {"Portugal", "Portuguese"},
-            {"Puerto Rico", "Puerto Rican"},
+            {"Puerto Rico", "Puerto Rican", "puertorico", "puertorican"},
             {"Qatar", "Qatari"},
             {"Réunion", "Reunion", "Reunionais", "Réunionais", "Reunionese", "Réunionese"},
             {"Romania", "Romanian"},
@@ -199,14 +200,14 @@ public class PlaceNames {
             {"Saint Pierre and Miquelon", "Saint-Pierrais", "Miquelonnais"},
             {"Saint Vincent and the Grenadines", "Vincentian"},
             {"Samoa", "Samoan"},
-            {"San Marino", "Sammarinese"},
-            {"São Tomé", "Sao Tome", "São Toméan", "Sao Tomean"},
+            {"San Marino", "Sammarinese", "sanmarino"},
+            {"São Tomé", "Sao Tome", "São Toméan", "Sao Tomean", "saotome"},
             {"Saudi"},
             {"Scotland", "Scottish"},
             {"Senegal", "Senegalese"},
             {"Serbia", "Serbian", "Serbs"},
             {"Seychelles", "Seychellois"},
-            {"Sierra Leone", "Sierra Leonean"},
+            {"Sierra Leone", "Sierra Leonean", "sierraleone"},
             {"Singapore", "Singaporean"},
             {"Sint Eustatius", "Statian"},
             {"Sint Maarten", "Sint Maartener"},
@@ -215,7 +216,7 @@ public class PlaceNames {
             {"Solomon"},
             {"Somaliland", "Somalilander"},
             {"Somali", "Somalia"},
-            {"South Africa", "South African"},
+            {"South Africa", "South African", "southafrica"},
             {"South Georgia", "South Sandwich"},
             {"South Ossetia", "South Ossetian"},
             {"South Sudan", "South Sudanese"},
@@ -245,9 +246,9 @@ public class PlaceNames {
             {"Tuvalu", "Tuvaluan"},
             {"Uganda", "Ugandan"},
             {"Ukraine", "Ukrainian"},
-            {"United Arab Emirates", "Emirati", "Emirian", "Emiri"},
-            {"United Kingdom", "Great Britain", "British", "GB", "Britons", "U.K.", "G.B."},
-            {"United States of America", "America", "American", "U.S.", "U.S.A.", "USA"},
+            {"United Arab Emirates", "Emirati", "Emirian", "Emiri", "arabia"},
+            {"United Kingdom", "unitedkingdom", "Great Britain", "greatbritain", "British", "the UK", "Britons", "U.K.", "G.B.", "England", "English"},
+            {"United States of America", "America", "American", "U.S.", "U.S.A."},
             {"Uruguay", "Uruguayan"},
             {"Uzbekistan", "Uzbekistani", "Uzbek"},
             {"Vanuatu", "Ni-Vanuatu", "Vanuatuan"},
@@ -271,6 +272,31 @@ public class PlaceNames {
         }
     }
 
+    private static WordGraph[] placeNameFindersExcluding = new WordGraph[places.length];
+
+    static {
+        for (int i = 0; i < places.length; ++i) {
+            placeNameFindersExcluding[i] = new WordGraph(1);
+            for (int j = 0; j < places.length; ++j) {
+                if (i != j) {
+                    for (String placeName : places[j]) {
+                        placeNameFindersExcluding[i].feed(placeName, 1);
+                    }
+                }
+            }
+        }
+    }
+
+    private static WordGraph fullPlaceNamesGraph = new WordGraph(1);
+
+    static {
+        for (String[] placeNames : places) {
+            for (String placeName : placeNames) {
+                fullPlaceNamesGraph.feed(placeName, 1);
+            }
+        }
+    }
+
     private static int getIndex(String name) {
         name = name.toLowerCase();
         for (int i = 0; i < places.length; ++i) {
@@ -289,5 +315,28 @@ public class PlaceNames {
 
     public static String[] getOptions(String name) {
         return places[getIndex(name)];
+    }
+
+    static boolean isFromOneCountry(Document doc) {
+        System.out.println("Is recipe. Is from one country?");
+        return countDifferentPlaceUpTo2(doc.getTitle()) == 1
+                || countDifferentPlaceUpTo2(doc.getUrl().replace('-', ' ')) == 1
+                || countDifferentPlaceUpTo2(doc.getContent()) == 1;
+    }
+
+    private static int countDifferentPlaceUpTo2(String str) {
+        String firstPlace = fullPlaceNamesGraph.findFirst(str);
+        if (firstPlace == null) {
+            System.out.println("NbPlaces=0");
+            return 0;
+        }
+        int firstPlaceIndex = getIndex(firstPlace);
+        if (placeNameFindersExcluding[firstPlaceIndex].findFirst(str) == null) {
+            System.out.println("NbPlaces=1 (" + firstPlace + ")");
+            return 1;
+        } else {
+            System.out.println("NbPlaces=2");
+            return 2;
+        }
     }
 }

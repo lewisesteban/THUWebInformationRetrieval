@@ -2,14 +2,16 @@ package searchengine.document;
 
 public class WebPageDoc implements Document {
 
-    protected String url;
-    protected String content;
-    protected String title;
+    private String url;
+    private String content;
+    private String title;
+    private String html;
 
-    public WebPageDoc(String url, String content, String title) {
+    public WebPageDoc(String url, String content, String title, String html) {
         this.url = url;
         this.content = content;
         this.title = title;
+        this.html = html;
     }
 
     @Override
@@ -25,5 +27,10 @@ public class WebPageDoc implements Document {
     @Override
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public String getHtml() {
+        return html;
     }
 }

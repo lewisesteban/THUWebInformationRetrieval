@@ -14,14 +14,31 @@ public class WordGraphTest {
         graph.feed("at", 0.01);
         graph.feed("'", 0.001);
         graph.feed("hve", 1);
-        assert graph.weigh("I have a dog who likes docker but doesn't like cats.") == 1111.111;
+        assert graph.weigh("I have a dog who likes docker but doesn't like ccats.") == 1111.111;
     }
 
     @Test
-    public void testMacCount() {
+    public void testMaxCount() {
         WordGraph graph = new WordGraph(2);
         graph.feed("test", 1);
         graph.feed("one", 10);
         assert graph.weigh("test test test one") == 12;
+    }
+
+    @Test
+    public void testStopAt() {
+        WordGraph graph = new WordGraph(1);
+        graph.feed("a", 1);
+        graph.feed("b", 1);
+        graph.feed("c", 1);
+        assert graph.weigh("abc", 2.) == 2;
+    }
+
+    @Test
+    public void testFindFirst() {
+        WordGraph graph = new WordGraph(1);
+        graph.feed("dog", 1);
+        graph.feed("cat", 1);
+        assert graph.findFirst("do cg cat dog").equals("cat");
     }
 }

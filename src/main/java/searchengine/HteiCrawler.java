@@ -1,10 +1,10 @@
 package searchengine;
 
 import searchengine.conf.CrawlerStartingPoints;
+import searchengine.conf.PageIdentifier;
 import searchengine.crawler.Crawler4j;
 import searchengine.crawler.SyncCrawler;
 import searchengine.document.Document;
-import searchengine.conf.RecipePageIdentifier;
 import searchengine.io.CrawlInput;
 import searchengine.io.CrawlOutput;
 import searchengine.searchdata.LuceneIndexWriter;
@@ -24,6 +24,7 @@ public class HteiCrawler implements CrawlInput {
 
     public HteiCrawler(CrawlOutput out) throws Exception {
         this.out = out;
+
     }
 
     public void start(int nbCrawlers) {
@@ -83,7 +84,7 @@ public class HteiCrawler implements CrawlInput {
     }
 
     private boolean mustSave(Document doc) {
-        return RecipePageIdentifier.isCookingPage(doc.getUrl(), doc.getContent());
+        return PageIdentifier.isValidRecipe(doc);
     }
 
     private void error(Exception e) {

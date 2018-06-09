@@ -34,9 +34,9 @@ public class CrawlController {
                     nbCrawled++;
                     if (saved) {
                         nbFound++;
-                        System.out.println("+++++ Found recipe: " + url);
+                        System.out.println("+++++ Found good recipe: " + url);
                     } else {
-                        System.out.println("- - - Not a recipe: " + url);
+                        System.out.println("- - - Not a good recipe: " + url);
                     }
                 }
 

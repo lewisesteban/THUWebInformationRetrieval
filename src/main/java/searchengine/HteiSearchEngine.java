@@ -16,7 +16,7 @@ public class HteiSearchEngine implements SEInput {
 
     @Override
     public Query newQuery(String[] placeNames, String[] ingredients) throws ParseException {
-        // example: "content:(+(\"China\" OR \"Chinese\")^0 AND (cat dog garlic onion))"
+        // example: "content:(+(\"China\" OR \"Chinese\") AND (cat dog garlic onion))"
 
         StringBuilder queryStr = new StringBuilder("content:(+(");
         boolean first = true;
@@ -27,7 +27,7 @@ public class HteiSearchEngine implements SEInput {
                 queryStr.append(" OR ");
             queryStr.append("\"").append(place).append("\"");
         }
-        queryStr.append(")^0 AND (");
+        queryStr.append(") AND (");
 
         first = true;
         for (String ingredient : ingredients) {

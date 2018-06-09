@@ -16,11 +16,9 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.jsoup.Jsoup;
 import searchengine.HteiCrawler;
-import searchengine.conf.RecipePageIdentifier;
-import searchengine.conf.WordGraph;
+import searchengine.conf.PageIdentifier;
 import searchengine.io.CrawlOutput;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -42,7 +40,7 @@ public class Main {
         while (size > 0) {
             String url = new String(Arrays.copyOf(buffer, size));
             org.jsoup.nodes.Document target = Jsoup.connect(url).get();
-            double weigh = RecipePageIdentifier.weigh(target.html());
+            double weigh = PageIdentifier.weigh(target.html());
             System.out.println(weigh + "\t" + target.html().length() + "\t" + (weigh / target.html().length()));
             size = System.in.read(buffer);
         }
