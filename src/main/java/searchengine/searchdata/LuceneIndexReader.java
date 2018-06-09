@@ -22,7 +22,6 @@ public class LuceneIndexReader implements RankedSearcher {
     private StandardAnalyzer analyzer;
     private IndexReader reader;
     private IndexSearcher searcher;
-    private ScoreDoc lastSearched = null;
 
     public LuceneIndexReader(String directory) throws IOException {
         analyzer = new StandardAnalyzer();
@@ -44,6 +43,7 @@ public class LuceneIndexReader implements RankedSearcher {
     private class LuceneQuery implements Query {
 
         org.apache.lucene.search.Query luceneQuery;
+        private ScoreDoc lastSearched = null;
 
         LuceneQuery(String queryStr) throws ParseException {
             luceneQuery = new QueryParser("content", analyzer).parse(queryStr);
@@ -58,10 +58,12 @@ public class LuceneIndexReader implements RankedSearcher {
         public Iterable<Document> searchNext(int nbDocs) throws IOException {
             TopDocs docs = searcher.searchAfter(lastSearched, luceneQuery, nbDocs);
             ArrayList<Document> results = new ArrayList<>(nbDocs);
-            for (int i = 0; i < docs.scoreDocs.length; ++i) {
-                results.add(new LuceneDocument(searcher.doc(docs.scoreDocs[i].doc)));
+            if (docs.scoreDocs.length > 0) {
+                for (int i = 0; i < docs.scoreDocs.length; ++i) {
+                    results.add(new LuceneDocument(searcher.doc(docs.scoreDocs[i].doc)));
+                }
+                lastSearched = docs.scoreDocs[docs.scoreDocs.length - 1];
             }
-            lastSearched = docs.scoreDocs[docs.scoreDocs.length - 1];
             return results;
         }
     }

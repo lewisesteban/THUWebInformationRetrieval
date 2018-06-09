@@ -161,7 +161,7 @@ public class PlaceNames {
             {"Namibia", "Namibian"},
             {"Nauru", "Nauruan"},
             {"Nepal", "Nepali", "Nepalese"},
-            {"Netherland", "Netherlandic", "Dutch"},
+            {"Netherlands", "Netherlandic", "Dutch"},
             {"New Caledonia", "New Caledonian"},
             {"New Zealand", "NZ", "N.Z.", "Zelanian", "New Zealanders"},
             {"Nicaragua", "Nicaraguan"},

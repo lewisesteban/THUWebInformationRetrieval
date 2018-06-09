@@ -48,7 +48,7 @@ public class SearchController {
         try {
             Query query = getEngine().newQuery(PlaceNames.getOptions(place), ingredients.split(" "));
             if (query.getNbResults() > 0) {
-                Iterable<Document> results = query.searchNext(10);
+                Iterable<Document> results = query.searchNext(20);
                 model.addAttribute("place", place);
                 model.addAttribute("ingredients", ingredients);
                 int linkNb = 0;
